@@ -24,7 +24,7 @@ struct Polinom{
     void insertordered(const int &k, const int &d);
     void removeordered(const int &k, const int &d);
     Polinom *mergepolinom(Polinom *p);
-    void printpoli();
+    void printpoli(Degisken *selected);
 };
 
 Polinom::Polinom(){
@@ -127,7 +127,7 @@ void Polinom::insertordered(const int &k, const int &d){
         return;
     }
 
-    if(head->derece < v->derece){
+    if(head->derece > v->derece){
         v->next = head;
         head = v;
         return;
@@ -135,7 +135,7 @@ void Polinom::insertordered(const int &k, const int &d){
 
     Degisken *pre = head;
     while(pre->next != NULL){
-        if(v->derece >= pre->next->derece)
+        if(v->derece <= pre->next->derece)
             break;
         pre = pre->next;
     }
@@ -221,26 +221,26 @@ Polinom *Polinom::mergepolinom(Polinom *p){
 
 }
 
-void Polinom::printpoli(){
-	Degisken* selected = head;
+void Polinom::printpoli(Degisken *selected){
 
     if(head == NULL){
         cout << "liste bos!!\n";
         return;
     }
 
-	while (selected != NULL)
-	{   
-		cout << selected->katsayi;
-        if(selected->derece != 0)
-            cout << "x^" << selected->derece;
-        if(selected->next == NULL){
-            cout << endl;
-            return;
-        }
-        cout << " + ";
-		selected = selected->next;
-	}
+    if(selected == NULL)
+        return;
+
+    printpoli(selected->next);
+
+    if(selected->katsayi > 0){
+        cout << " + " << selected->katsayi << "x^" << selected->derece;
+    }
+
+    if(selected->katsayi < 0){
+        cout << " - " << -selected->katsayi << "x^" << selected->derece;
+    }
+
 }
 
 int main(){
@@ -278,8 +278,9 @@ int main(){
 
     count = 0;
     while(count < i){
-        cout << count + 1 <<". polinom : ";
-        polinom[count].printpoli();
+        //cout << count + 1 <<". polinom : ";
+        polinom[count].printpoli(polinom[count].head);
+        cout << endl;
         count++;
     }
     
@@ -290,6 +291,7 @@ int main(){
     }
 
     cout << "toplanmis hali : ";
-    toplamPolinom.printpoli();
+    toplamPolinom.printpoli(toplamPolinom.head);
+    cout << endl;
 
 }
