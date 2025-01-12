@@ -1,6 +1,9 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+
+//delete eklenecek
+
 using namespace std;
 
 struct Degisken{
@@ -17,12 +20,8 @@ struct Polinom{
 
     bool empty() const;
     bool checkZero(int check);
-    void addfront(const int &k, const int &d);
-    void addback(const int &k, const int &d);
     void removefront();
-    void removeback();
     void insertordered(const int &k, const int &d);
-    void removeordered(const int &k, const int &d);
     Polinom *mergepolinom(Polinom *p);
     void printpoli(Degisken *selected);
 };
@@ -43,75 +42,13 @@ bool Polinom::checkZero(int k){
     return k == 0;
 }
 
-void Polinom::addfront(const int &k, const int &d){
-    if(checkZero(k))
-        return;
-    Degisken *v = new Degisken;
-    v->katsayi = k;
-    v->derece = d;
-    if(head != NULL && head->derece == v->derece){
-        head->katsayi += v->katsayi;
-        delete v;
-    }else{
-    v->next = head;
-    head = v;
-    }
-}
-
-void Polinom::addback(const int &k, const int &d){
-    if(checkZero(k))
-        return;
-    Degisken *v = new Degisken;
-    v->katsayi = k;
-    v->derece = d;
-    v->next = NULL;
-
-    if(head == NULL) head = v;
-
-    else{
-        Degisken *u = head;
-        while(u->next != NULL){
-            u = u->next;
-        }
-
-        if(u->derece == v->derece){
-            u->katsayi += v->katsayi;
-            delete v;
-        }else{
-        u->next = v;
-        }
-    }
-}
-
 void Polinom::removefront(){
-    if(head == NULL){
-        return;
-    }
-    Degisken *temp = head;
-    head = head->next;
-    delete temp;
-}
-
-void Polinom::removeback(){
-    if(head == NULL){
-        return;
-    }
-    
-    Degisken *temp = head;
-
-    if(temp->next == NULL){
-        head = NULL;
-        delete temp;
-    }
-
-    while(temp->next != NULL){
-        if(temp->next->next == NULL){
-            delete temp->next;
-            temp->next = NULL;
-            return;
-        }
-        temp = temp->next;
-    }
+     if(head == NULL){
+         return;
+     }
+     Degisken *temp = head;
+     head = head->next;
+     delete temp;
 }
 
 void Polinom::insertordered(const int &k, const int &d){
@@ -146,40 +83,7 @@ void Polinom::insertordered(const int &k, const int &d){
         v->next = pre->next;
         pre->next = v;
     }
-}
-
-void Polinom::removeordered(const int &k, const int &d){
-    if(head == NULL){
-        return;
-    }
-
-    Degisken *v = new Degisken;
-    v->derece = d;
-    v->katsayi = k;
-
-    if((head->derece == v->derece) && (head->katsayi == v->katsayi)){
-        Degisken *temp = head;
-        head = head->next;
-        delete temp;
-        return;
-    }
-
-    Degisken *pre = head;
-    while(pre->next != NULL){
-        if((pre->next->derece == v->derece) && (pre->next->katsayi == v->katsayi)){
-            Degisken *temp = pre->next;
-            pre->next = pre->next->next;
-            delete temp;
-            return;
-        }
-
-        pre = pre->next;
-    }
-    if(pre->next == NULL){
-        cout << "eleman bulunamadi\n";
-        return;
-    }
-}   
+} 
 
 Polinom *Polinom::mergepolinom(Polinom *p){
     Polinom *Merged = new Polinom;
@@ -237,7 +141,7 @@ void Polinom::printpoli(Degisken *selected){
         cout << " + " << selected->katsayi << "x^" << selected->derece;
     }
 
-    if(selected->katsayi < 0){
+    else if(selected->katsayi < 0){
         cout << " - " << -selected->katsayi << "x^" << selected->derece;
     }
 
@@ -259,7 +163,7 @@ int main(){
     inputs.seekg(0);
     Polinom *polinom = new Polinom[i];
 
-    while(!inputs.eof()){
+    while(!inputs.eof()){// -1leri görene kadar dereceleri alıyoruz
         inputs >> katsayi;
         inputs >> derece;
 
@@ -286,7 +190,7 @@ int main(){
     
     Polinom toplamPolinom = polinom[0];
 
-    for(int index = 1; index < i; index++){
+    for(int index = 1; index < i; index++){// toplananları 0. indexteki polinomda topluyoruz
         toplamPolinom = *toplamPolinom.mergepolinom(&polinom[index]);
     }
 
