@@ -1,7 +1,9 @@
 #include <iostream>
 #include <string>
 #include <fstream>
-
+#define FILENAME "input.txt"
+#define toplamIndex 0
+#define polinomSon -1
 //delete eklenecek
 
 using namespace std;
@@ -51,7 +53,7 @@ void Polinom::removefront(){
      delete temp;
 }
 
-void Polinom::insertordered(const int &k, const int &d){
+void Polinom::insertordered(const int &k, const int &d){//küçükten büyüğe sıralı uyucak şekilde 
     if(checkZero(k))
         return;
     Degisken *v = new Degisken;
@@ -85,7 +87,7 @@ void Polinom::insertordered(const int &k, const int &d){
     }
 } 
 
-Polinom *Polinom::mergepolinom(Polinom *p){
+Polinom *Polinom::mergepolinom(Polinom *p){//iki polinomu toplar
     Polinom *Merged = new Polinom;
 
     Degisken *firstp = this->head;
@@ -149,8 +151,7 @@ void Polinom::printpoli(Degisken *selected){
 
 int main(){
     ifstream inputs;
-    string file = "input.txt";
-    inputs.open(file, ios::in);
+    inputs.open(FILENAME, ios::in);
     int katsayi, derece, i = 0, count = 0;
     string str;
 
@@ -172,7 +173,7 @@ int main(){
             exit(0);
         }
 
-        if((katsayi == -1) && (derece == -1)){
+        if((katsayi == polinomSon) && (derece == polinomSon)){
             count++;
             continue;
         }
@@ -188,7 +189,7 @@ int main(){
         count++;
     }
     
-    Polinom toplamPolinom = polinom[0];
+    Polinom toplamPolinom = polinom[toplamIndex];
 
     for(int index = 1; index < i; index++){// toplananları 0. indexteki polinomda topluyoruz
         toplamPolinom = *toplamPolinom.mergepolinom(&polinom[index]);
